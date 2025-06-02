@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-app
+    ports:
+      - "1950:80"
+    volumes:
+      - ./web:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - ctf
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=coffee_app
+      - MYSQL_PASSWORD=frequent-recopy-stinking-valley-campus-idealism-elbow-bucked
+      - MYSQL_DATABASE=coffee_shop
+
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=payback-drowsily-outnumber-recapture-steadily-shabby-drone-porous
+      - MYSQL_DATABASE=coffee_shop
+      - MYSQL_USER=coffee_app
+      - MYSQL_PASSWORD=frequent-recopy-stinking-valley-campus-idealism-elbow-bucked
+
+    networks:
+      - ctf
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  ctf:
+    driver: bridge
