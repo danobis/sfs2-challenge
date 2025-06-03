@@ -1,45 +1,29 @@
 <?php
-
-if (!isLoggedIn()) {
-    header('Location: index.php?page=login');
-    exit;
-}
-
 $user = getUserDetails($_SESSION['user']);
 $review = getReviewByUser($_SESSION['user_id']);
 $message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // Handle profile image upload
-    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
-        if (isAdmin()) {
-            $uploaded_file = handleFileUpload($_FILES['profile_image']);
-            if ($uploaded_file) {
-                updateProfile($_SESSION['user'], $_POST['email'] ?? $user['email'], $uploaded_file);
-                $message = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>Profile picture updated successfully!</div>';
-                $user = getUserDetails($_SESSION['user']);
-            } else {
-                $message = '<div class="alert alert-danger"><i class="fas fa-times me-2"></i>Failed to upload image. Please try again.</div>';
-            }
-        } else {
-            $message = '<div class="alert alert-danger"><i class="fas fa-lock me-2"></i>Access denied! Only administrators can upload files.</div>';
-        }
-    }
-
-    elseif (isset($_POST['email'])) {
-        updateProfile($_SESSION['user'], $_POST['email'], $user['profile_image']);
-        $message = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>Email address updated successfully!</div>';
-        $user = getUserDetails($_SESSION['user']);
-    }
-
-    elseif (isset($_POST['review'])) {
-        if (updateReview($_SESSION['user_id'], $_POST['review'])) {
+// Handle messages from redirects
+if (isset($_GET['message'])) {
+    switch($_GET['message']) {
+        case 'profile_updated':
+            $message = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>Profile picture updated successfully!</div>';
+            break;
+        case 'email_updated':
+            $message = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>Email address updated successfully!</div>';
+            break;
+        case 'review_updated':
             $message = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>Thank you for your review!</div>';
-            $review = getReviewByUser($_SESSION['user_id']);
-        } else {
+            break;
+        case 'upload_failed':
+            $message = '<div class="alert alert-danger"><i class="fas fa-times me-2"></i>Failed to upload image. Please try again.</div>';
+            break;
+        case 'access_denied':
+            $message = '<div class="alert alert-danger"><i class="fas fa-lock me-2"></i>Access denied! Only administrators can upload files.</div>';
+            break;
+        case 'review_failed':
             $message = '<div class="alert alert-danger"><i class="fas fa-times me-2"></i>Failed to save review. Please try again.</div>';
-        }
+            break;
     }
 }
 ?>
@@ -168,6 +152,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <!-- Customer Review -->
+            <!-- TODO: Review data gets inserted into coffee_reviews table, review_text column - @john_the_dev remember to remove this comment before production!!! -->
+			<!-- "UPDATE coffee_reviews SET review_text = '$review' WHERE id = $existing_review_id"; -->
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fas fa-star me-2"></i>Share Your Experience</h5>

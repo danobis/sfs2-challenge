@@ -119,7 +119,6 @@ function isLoggedIn() {
 
 function logout() {
     session_destroy();
-    session_start();
 }
 
 function getUserDetails($username) {

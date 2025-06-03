@@ -6,6 +6,110 @@ ini_set('display_errors', 1);
 require_once './includes/config.php';
 require_once './includes/functions.php';
 
+// Handle logout
+if (isset($_GET['page']) && $_GET['page'] === 'logout') {
+    logout();
+    header('Location: index.php?page=home');
+    exit;
+}
+
+// Handle login processing
+if (isset($_GET['page']) && $_GET['page'] === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+        if (login($_POST['username'], $_POST['password'])) {
+            header('Location: index.php?page=home');
+            exit;
+        }
+    }
+}
+
+// Handle profile processing
+if (isset($_GET['page']) && $_GET['page'] === 'profile' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isLoggedIn()) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+    
+    $success = false;
+    
+    // Handle profile image upload
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
+        if (isAdmin()) {
+            $uploaded_file = handleFileUpload($_FILES['profile_image']);
+            if ($uploaded_file) {
+                updateProfile($_SESSION['user'], $_POST['email'] ?? getUserDetails($_SESSION['user'])['email'], $uploaded_file);
+                $success = true;
+                $message = 'profile_updated';
+            } else {
+                $message = 'upload_failed';
+            }
+        } else {
+            $message = 'access_denied';
+        }
+    }
+    // Handle email update
+    elseif (isset($_POST['email'])) {
+        $user = getUserDetails($_SESSION['user']);
+        updateProfile($_SESSION['user'], $_POST['email'], $user['profile_image']);
+        $success = true;
+        $message = 'email_updated';
+    }
+    // Handle review update
+    elseif (isset($_POST['review'])) {
+        if (updateReview($_SESSION['user_id'], $_POST['review'])) {
+            $success = true;
+            $message = 'review_updated';
+        } else {
+            $message = 'review_failed';
+        }
+    }
+    
+    // Redirect to prevent form resubmission
+    header('Location: index.php?page=profile&message=' . $message);
+    exit;
+}
+
+// Handle checkout processing
+if (isset($_GET['page']) && $_GET['page'] === 'checkout') {
+    if (!isLoggedIn()) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+    
+    $cart_items = getCartItems();
+    if (empty($cart_items)) {
+        header('Location: index.php?page=cart');
+        exit;
+    }
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
+        $user_id = $_SESSION['user_id'];
+        $total = 0;
+        foreach ($cart_items as $item) {
+            $total += $item['price'];
+        }
+
+        // Vulnerable to SQL injection (for CTF purposes)
+        $query = "INSERT INTO orders (user_id, total_amount, status, created_at) 
+                  VALUES ($user_id, $total, 'pending', NOW())";
+
+        if (mysqli_query($conn, $query)) {
+            $order_id = mysqli_insert_id($conn);
+
+            foreach ($cart_items as $item) {
+                $product_id = $item['id'];
+                $price = $item['price'];
+                mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, quantity, price_at_time) 
+                                    VALUES ($order_id, $product_id, 1, $price)");
+            }
+
+            $_SESSION['cart'] = [];
+            header('Location: index.php?page=orders&message=order_success');
+            exit;
+        }
+    }
+}
+
 $action = $_GET['action'] ?? null;
 if ($action) {
     switch($action) {

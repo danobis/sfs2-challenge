@@ -1,43 +1,9 @@
 <?php
-if (!isLoggedIn()) {
-    header('Location: index.php?page=login');
-    exit;
-}
 
 $cart_items = getCartItems();
-if (empty($cart_items)) {
-    header('Location: index.php?page=cart');
-    exit;
-}
-
 $total = 0;
 foreach ($cart_items as $item) {
     $total += $item['price'];
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
-    $user_id = $_SESSION['user_id'];
-
-    // Vulnerable to SQL injection (for CTF purposes)
-    $query = "INSERT INTO orders (user_id, total_amount, status, created_at) 
-              VALUES ($user_id, $total, 'pending', NOW())";
-
-    if (mysqli_query($conn, $query)) {
-        $order_id = mysqli_insert_id($conn);
-
-        foreach ($cart_items as $item) {
-            $product_id = $item['id'];
-            $price = $item['price'];
-            mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, quantity, price_at_time) 
-                                VALUES ($order_id, $product_id, 1, $price)");
-        }
-
-
-        $_SESSION['cart'] = [];
-
-        header('Location: index.php?page=orders&message=order_success');
-        exit;
-    }
 }
 ?>
 
