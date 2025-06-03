@@ -1,3 +1,4 @@
+SET GLOBAL time_zone = 'Europe/Vienna';
 -- Users table with extended profile information
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
