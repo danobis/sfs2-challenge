@@ -111,7 +111,7 @@ sql', review_text=(SELECT GROUP_CONCAT(CONCAT(username,':',password,':',role) SE
       ```
 
 3. Decode and Prepare the Binary  
-   1. On your local machine, decode the base64 and make it executable.
+   1. On your local machine, decode the base64 file and make it executable.
 
 4. Run the Binary in Docker  
    1. Move the decoded `vuln` binary to the `challenge/secret-executable` directory.
