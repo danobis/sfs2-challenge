@@ -143,3 +143,42 @@ Security Recommendations
 
 Flag Association: This vulnerability enables access to Flag 2 (File System Access)
 
+## Vulnerability 4: Format String Vulnerability in Binary Executable
+
+**Type**: Format String Vulnerability
+**Location**: challenge/secret-executable/vuln (compiled C binary)
+**Severity**: High
+
+#### Description
+
+The `vuln` binary discovered in the `/uploads/` directory contains a format string vulnerability. Specifically, it uses `printf(user_input)` directly without format specifiers, allowing arbitrary stack data to be read.
+
+Relevant C code excerpt:
+
+```c
+char buf[1024];
+scanf("%1024s", buf);
+printf(buf); // Vulnerable: user-controlled format string
+```
+
+This allows an attacker to leak memory content from the stack, including sensitive variables. In this challenge, the flag is hardcoded into a stack variable and can be exfiltrated using repeated `%lx` format specifiers.
+
+Example payload:
+
+```
+%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx
+```
+
+This outputs stack memory, which can be decoded to recover the flag by reversing 64-bit chunks due to little-endian representation.
+
+#### How to Fix
+
+Always use format specifiers when printing user input:
+
+```c
+// FIXED: Use format string with user input as an argument
+printf("%s", buf);
+```
+
+Flag Association: This vulnerability enables access to Flag 3 (Secret Executable Flag)
+

