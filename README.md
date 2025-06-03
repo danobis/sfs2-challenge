@@ -14,7 +14,7 @@ docker compose up -d
 ```
 3. Access the challenge at: http://localhost:1950/intro
 
-4. Later on, if you find the admin's binary, navigate to the `challenge/secret-exectable` directory and run:
+4. Later on, if you find the admin's binary, place it in the `challenge/secret-exectable` directory and run:
 
 ```bash
 docker build -t secret-vuln .
