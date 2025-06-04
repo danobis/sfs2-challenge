@@ -28,6 +28,9 @@ At some point, you may gain access to the admin account and stumble upon a hidde
 
 Flag Format: *CTF{some-text}*
 
+## Hints 
+If you have problems finding the flags, you can find a button on the `/into` page.
+
 ## Authors
 
 - Daniel Hametner
