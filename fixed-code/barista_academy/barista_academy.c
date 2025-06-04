@@ -126,12 +126,12 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
     printf("Enter your favorite coffee blend: ");
     fflush(stdout);
 
-    // gets(coffee_order);  // vulnerable
-    if (!fgets(coffee_order, sizeof(coffee_order), stdin)) {  // fixed vulnerability
+    // gets(coffee_order); // vulnerable
+    if (!fgets(coffee_order, 16, stdin)) { // fixed vulnerability
       fprintf(stderr, "fgets failed while reading coffee blend.\n");
       exit(EXIT_FAILURE);
     }
-    coffee_order[strcspn(coffee_order, "\n")] = '\0';  // fixed vulnerability
+    coffee_order[strcspn(coffee_order, "\n")] = '\0'; // fixed vulnerability
 
     printf("\nYour coffee order: %s\n", coffee_order);
     printf("Current coffee strength: %d\n", coffee_strength);
@@ -159,11 +159,11 @@ void ctf_challenge_two()
   if (coffee_challenge != 1) {
     return;
   }
-  int account_balance = 1100;
+  long account_balance = 1100; // fixed vulnerability (use larger type)
   int number_coffees = 0;
-  long long total_cost = 0;  // fixed vulnerability (use larger type)
+  long total_cost = 0;  
 
-  printf("You have %d coins to spend.\n", account_balance);
+  printf("You have %lld coins to spend.\n", account_balance);
   printf("Coffees cost 900 coins each.\n");
 
   printf("\n🎯 Your Mission: Try to buy coffee and unlock the big prize!\n");
@@ -184,11 +184,11 @@ void ctf_challenge_two()
       printf("Negative purchases are not allowed!\n");
       continue;
     }
-    total_cost = (long long)900 * number_coffees;  // fixed vulnerability
-    printf("Calculated total cost: %lld\n", total_cost);  // fixed vulnerability
+    total_cost = ((long)(900 * number_coffees)); // fixed vulnerability
+    printf("Calculated total cost: %lld\n", total_cost); // fixed vulnerability
     if (total_cost <= account_balance) {
-      account_balance -= (int)total_cost;  // fixed vulnerability
-      printf("Purchase successful! New balance: %d\n", account_balance);
+      account_balance -= total_cost; // fixed vulnerability
+      printf("Purchase successful! New balance: %lld\n", account_balance);
       if (account_balance >= 100000) {
         printf("Here's your reward: %s\n", flag2);
         printf("Restart application and enter secret coffee flag!\n");
@@ -228,12 +228,12 @@ void ctf_final_challenge()
     printf("Print your custom order below:\n");
     fflush(stdout);
 
-    // scanf("%1024s", buffer);  // vulnerable
-    scanf("%1023s", buffer);  // fixed vulnerability
+    // scanf("%1024s", buffer); // vulnerable
+    scanf("%1023s", buffer); // fixed vulnerability
 
     printf("Processing order: ");
     // printf(buffer);  // vulnerable
-    printf("%s", buffer);  // fixed vulnerability
+    printf("%s", buffer); // fixed vulnerability
     printf("\n\n");
   }
   printf("Thank you for your order. Goodbye!\n");
