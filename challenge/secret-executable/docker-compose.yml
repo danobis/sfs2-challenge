@@ -1,0 +1,9 @@
+services:
+  barista:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./barista_academy:/home/ctf/barista_academy:ro
+    stdin_open: true
+    tty: true

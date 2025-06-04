@@ -177,6 +177,7 @@ void ctf_challenge_one()
       printf("\nThe coffee strength has been perfectly adjusted!\n");
       printf("Here's your reward: %s\n", flag1);
       printf("Restart application and enter secret coffee flag!\n");
+      fflush(stdout);
       break;
     }
     if (coffee_strength != 17) {

@@ -1,6 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:20.04
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:24.04
 
 RUN apt update && apt install -y \
     gdb \
