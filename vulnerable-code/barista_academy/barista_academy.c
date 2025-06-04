@@ -1,6 +1,43 @@
+/// --------------------------------------------------------------------------------------
+/// @file barista_academy.c
+/// @brief HeadOfCoffee's CTF-style barista training challenges
+///
+/// This program implements a series of three interactive CTF challenges focused on
+/// demonstrating common C vulnerabilities: buffer overflow, integer overflow, and
+/// format string exploitation. It decrypts three flags using an XOR key, then guides
+/// the user through each challenge in sequence:
+///   1. ctf_challenge_one: overflow a 16-byte buffer to alter a coffee_strength variable.
+///   2. ctf_challenge_two: trigger integer overflow by purchasing too many coffees.
+///   3. ctf_final_challenge: leverage a format string vulnerability to reveal the final flag.
+///
+/// Each challenge prints hints, verifies user input, and displays the corresponding flag
+/// when successfully exploited. Upon completion of all three challenges, an ASCII-art
+/// portrait of the master barista is printed.
+///
+/// Global Variables:
+///   - enc_flag1, enc_flag2, enc_flag3: Encrypted XORed byte arrays for each flag.
+///   - flag1, flag2, flag3: Buffers to store the decrypted flags.
+///   - coffee_challenge: Tracks current challenge state (0,1,2).
+///   - actual_coffee_strength: Randomly generated target strength for challenge one.
+///
+/// @note
+///   - XOR_KEY defines the single-byte XOR key used for decryption.
+///   - FLAG_BUFFER_SIZE must be 30 to accommodate 29 encrypted bytes plus a null terminator.
+///
+/// @see
+///   - decrypt(): Performs XOR decryption of encrypted flags.
+///   - ctf_init_flags(): Decrypts all three flags at program start.
+///   - ctf_main(): Main loop that prompts for flags or starts challenges.
+///   - ctf_challenge_one(): Implements challenge 1 (buffer overflow).
+///   - ctf_challenge_two(): Implements challenge 2 (integer overflow).
+///   - ctf_final_challenge(): Implements challenge 3 (format string).
+///   - print_master_barista(): Prints ASCII art upon completion.
+///
+/// @date June 4, 2025
+/// --------------------------------------------------------------------------------------
+
 #include <ctype.h>
 #include <errno.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -176,7 +213,7 @@ void ctf_challenge_two()
       break;
     }
     if (number_coffees == 0) {
-      printf("No coffee purchased continuing...\n");
+      printf("No coffee purchased. Continuing...\n");
       continue;
     }
     if (number_coffees < 0) {
@@ -214,7 +251,7 @@ void ctf_final_challenge()
   printf("🎯 Your Mission: Print a special coffee order to reveal the secret flag!\n");
   printf("💡 Hint: Sometimes the order you place can change more than just the taste...\n");
   printf("💡 Hint: Try using special formatting to unlock hidden secrets in the menu!\n");
-  printf("💡 Hint: Little or big Indians!\n\n");
+  printf("💡 Hint: No matter how big or small Indians are, everyone likes coffee!\n\n");
 
   char buffer[1024];
   memset(buffer, '\0', 1024);

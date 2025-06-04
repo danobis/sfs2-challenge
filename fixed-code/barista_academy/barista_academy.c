@@ -1,6 +1,57 @@
+/// --------------------------------------------------------------------------------------
+/// @file barista_academy.c
+/// @brief Fixed implementation of HeadOfCoffee's CTF-style barista training challenges
+///
+/// This program implements three sequential CTF challenges—buffer overflow, integer overflow,
+/// and format string exploitation—using safe alternatives to the unsafe functions previously
+/// demonstrated. The encrypted flags are XOR‐decrypted at startup, and each challenge prints
+/// hints and verifies user input before revealing the corresponding flag:
+///   1. ctf_challenge_one(): Uses `fgets()` instead of `gets()` to read a 16‐byte buffer safely.
+///      Players must still overflow the buffer to modify `coffee_strength` and unlock flag1.
+///   2. ctf_challenge_two(): Uses 64‐bit types (`long`) for balance and cost calculations to
+///      prevent unintended 32‐bit integer overflows while still illustrating the concept; flag2
+///      is revealed once a manipulated purchase condition is met.
+///   3. ctf_final_challenge(): Uses `scanf("%1023s", buffer)` and `printf("%s", buffer)` to
+///      eliminate format string vulnerabilities and safely read up to 1023 characters; flag3
+///      still becomes accessible by printing crafted format specifiers in the input.
+///
+/// Once all flags are captured in sequence, the program prints an ASCII‐art portrait of the
+/// master barista. All insecure calls (`gets()`, unchecked multiplication, and unformatted
+/// `printf()`) have been replaced by secure counterparts without altering the original logic of
+/// each challenge.
+///
+/// Global Variables:
+///   - enc_flag1, enc_flag2, enc_flag3: Encrypted XORed byte arrays for each flag (29 bytes each).
+///   - flag1, flag2, flag3: Buffers (30 bytes each) to store decrypted flags with null terminator.
+///   - coffee_challenge: Tracks the current phase (0, 1, or 2) of the CTF sequence.
+///   - actual_coffee_strength: Random target character (A–Z or a–z) for challenge one.
+///
+/// Secure Function Replacements:
+///   - `fgets(coffee_order, 16, stdin)` replaces unsafe `gets(coffee_order)`.
+///   - 64‐bit `long` type for `account_balance` and `total_cost` replaces 32‐bit `int`.
+///   - `scanf("%1023s", buffer)` and `printf("%s", buffer)` replace unsafe `scanf("%1024s", buffer)`
+///     and unformatted `printf(buffer)`.
+///
+/// @note
+///   - XOR_KEY (0x42) decrypts each flag on startup via `decrypt()`.
+///   - FLAG_BUFFER_SIZE must be 30 to accommodate 29 encrypted bytes plus a null terminator.
+///   - The program’s entry point (`main()`) calls `ctf_main()`, which orchestrates flag checks
+///     and invokes each challenge in turn.
+///   - Upon finishing all three challenges, `print_master_barista()` displays the ASCII art of the
+///     master barista and a final congratulatory message.
+///
+/// @see
+///   - decrypt(): Performs XOR decryption of encrypted flags.
+///   - ctf_init_flags(): Decrypts all three flags before any challenge begins.
+///   - ctf_main(): Main loop that checks user‐entered flags or starts challenges.
+///   - ctf_challenge_one(), ctf_challenge_two(), ctf_final_challenge(): Individual challenge routines.
+///   - print_master_barista(): Renders ASCII art upon full completion.
+///
+/// @date June 4, 2025
+/// --------------------------------------------------------------------------------------
+
 #include <ctype.h>
 #include <errno.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -207,7 +258,7 @@ void ctf_final_challenge()
   printf("🎯 Your Mission: Print a special coffee order to reveal the secret flag!\n");
   printf("💡 Hint: Sometimes the order you place can change more than just the taste...\n");
   printf("💡 Hint: Try using special formatting to unlock hidden secrets in the menu!\n");
-  printf("💡 Hint: Little or big Indians!\n\n");
+  printf("💡 Hint: No matter how big or small Indians are, everyone likes coffee!\n\n");
 
   char buffer[1024];
   memset(buffer, '\0', 1024);
