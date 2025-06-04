@@ -24,7 +24,7 @@ docker run -it --rm secret-vuln
 ## Challenge Overview
 This is a web application security challenge featuring a coffee shop e-commerce site. Your mission is to find hidden flags by exploiting security vulnerabilities in the application.
 
-At some point, you may gain access to the admin account and stumble upon a hidden compiled binary. It looks like an internal tool – investigate it closely.
+At some point, you may gain access to the admin account and stumble upon a hidden compiled binary. It looks like an internal tool for baristas – investigate it closely.
 
 Flag Format: *CTF{some-text}*
 
