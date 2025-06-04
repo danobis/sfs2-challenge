@@ -107,7 +107,7 @@ int ctf_main() {
   return -1;
 }
 
-void ctf_challenge_one() // solution: 1234567890123456789012345678M
+void ctf_challenge_one() 
 {
   if (coffee_challenge != 0) {
     return;
@@ -127,11 +127,11 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
     fflush(stdout);
 
     // gets(coffee_order); // vulnerable
-    if (!fgets(coffee_order, 16, stdin)) { // fixed vulnerability
+    if (!fgets(coffee_order, 16, stdin)) { // FIXED vulnerability
       fprintf(stderr, "fgets failed while reading coffee blend.\n");
       exit(EXIT_FAILURE);
     }
-    coffee_order[strcspn(coffee_order, "\n")] = '\0'; // fixed vulnerability
+    coffee_order[strcspn(coffee_order, "\n")] = '\0'; // FIXED vulnerability
 
     printf("\nYour coffee order: %s\n", coffee_order);
     printf("Current coffee strength: %d\n", coffee_strength);
@@ -152,18 +152,16 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
   }
 }
 
-// solution: 2147483520
-//           217834213
 void ctf_challenge_two()
 {
   if (coffee_challenge != 1) {
     return;
   }
-  long account_balance = 1100; // fixed vulnerability (use larger type)
+  long account_balance = 1100; // FIXED vulnerability (use larger type)
   int number_coffees = 0;
   long total_cost = 0;  
 
-  printf("You have %lld coins to spend.\n", account_balance);
+  printf("You have %ld coins to spend.\n", account_balance);
   printf("Coffees cost 900 coins each.\n");
 
   printf("\n🎯 Your Mission: Try to buy coffee and unlock the big prize!\n");
@@ -184,11 +182,11 @@ void ctf_challenge_two()
       printf("Negative purchases are not allowed!\n");
       continue;
     }
-    total_cost = ((long)(900 * number_coffees)); // fixed vulnerability
-    printf("Calculated total cost: %lld\n", total_cost); // fixed vulnerability
+    total_cost = ((long)(900 * number_coffees)); // FIXED vulnerability
+    printf("Calculated total cost: %ld\n", total_cost); // FIXED vulnerability
     if (total_cost <= account_balance) {
-      account_balance -= total_cost; // fixed vulnerability
-      printf("Purchase successful! New balance: %lld\n", account_balance);
+      account_balance -= total_cost; // FIXED vulnerability
+      printf("Purchase successful! New balance: %ld\n", account_balance);
       if (account_balance >= 100000) {
         printf("Here's your reward: %s\n", flag2);
         printf("Restart application and enter secret coffee flag!\n");
@@ -201,10 +199,6 @@ void ctf_challenge_two()
   }
 }
 
-// %llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx
-// https://www.rapidtables.com/convert/number/hex-to-ascii.html
-// 707061637b465443 635f306e31636375 345f72336b633472 7d7472336c <-- little endian
-// 4354467B63617070 756363316E305F63 7234636B33725F34 6C3372747D <-- big endian
 void ctf_final_challenge()
 {
   if (coffee_challenge != 2) {
@@ -229,11 +223,11 @@ void ctf_final_challenge()
     fflush(stdout);
 
     // scanf("%1024s", buffer); // vulnerable
-    scanf("%1023s", buffer); // fixed vulnerability
+    scanf("%1023s", buffer); // FIXED vulnerability
 
     printf("Processing order: ");
     // printf(buffer);  // vulnerable
-    printf("%s", buffer); // fixed vulnerability
+    printf("%s", buffer); // FIXED vulnerability
     printf("\n\n");
   }
   printf("Thank you for your order. Goodbye!\n");

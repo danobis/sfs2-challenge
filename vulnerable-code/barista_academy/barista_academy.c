@@ -107,7 +107,11 @@ int ctf_main() {
   return -1;
 }
 
-void ctf_challenge_one() // solution: 1234567890123456789012345678M
+/// # -> any ASCII char
+/// X -> specific ASCII char revealed on overflow
+/// solution: ############################X
+/// result: CTF{m0cha_myst3ries_r3v34l3d}
+void ctf_challenge_one()
 {
   if (coffee_challenge != 0) {
     return;
@@ -147,8 +151,8 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
   }
 }
 
-// solution: 2147483520
-//           217834213
+/// solution: 2147483520
+/// result: CTF{espresso_3xpr3ss_secrets}
 void ctf_challenge_two()
 {
   if (coffee_challenge != 1) {
@@ -196,10 +200,12 @@ void ctf_challenge_two()
   }
 }
 
-// %llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx
-// https://www.rapidtables.com/convert/number/hex-to-ascii.html
-// 707061637b465443 635f306e31636375 345f72336b633472 7d7472336c <-- little endian
-// 4354467B63617070 756363316E305F63 7234636B33725F34 6C3372747D <-- big endian
+/// https://robinlinus.github.io/endian/
+/// https://www.rapidtables.com/convert/number/hex-to-ascii.html
+/// solution: %llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx
+/// little endian output: 707061637b465443 635f306e31636375 345f72336b633472 7d7472336c
+/// big endian output: 4354467B63617070 756363316E305F63 7234636B33725F34 6C3372747D
+/// result: CTF{cappucc1n0_cr4ck3r_4l3rt}
 void ctf_final_challenge()
 {
   if (coffee_challenge != 2) {
