@@ -30,7 +30,7 @@ if (isset($_GET['page']) && $_GET['page'] === 'profile' && $_SERVER['REQUEST_MET
         exit;
     }
     
-    $success = false;
+    $message = 'unknown_error'; // Initialize with default value
     
     // Handle profile image upload
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
@@ -38,7 +38,6 @@ if (isset($_GET['page']) && $_GET['page'] === 'profile' && $_SERVER['REQUEST_MET
             $uploaded_file = handleFileUpload($_FILES['profile_image']);
             if ($uploaded_file) {
                 updateProfile($_SESSION['user'], $_POST['email'] ?? getUserDetails($_SESSION['user'])['email'], $uploaded_file);
-                $success = true;
                 $message = 'profile_updated';
             } else {
                 $message = 'upload_failed';
@@ -51,13 +50,11 @@ if (isset($_GET['page']) && $_GET['page'] === 'profile' && $_SERVER['REQUEST_MET
     elseif (isset($_POST['email'])) {
         $user = getUserDetails($_SESSION['user']);
         updateProfile($_SESSION['user'], $_POST['email'], $user['profile_image']);
-        $success = true;
         $message = 'email_updated';
     }
     // Handle review update
     elseif (isset($_POST['review'])) {
         if (updateReview($_SESSION['user_id'], $_POST['review'])) {
-            $success = true;
             $message = 'review_updated';
         } else {
             $message = 'review_failed';
