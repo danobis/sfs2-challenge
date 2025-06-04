@@ -28,7 +28,7 @@ static const unsigned char enc_flag3[FLAG_BUFFER_SIZE - 1] = {
 };
 
 static int coffee_challenge = 0;
-int actual_coffee_strength = 0;
+static int actual_coffee_strength = 0;
 
 #define XOR_KEY 0x42
 
