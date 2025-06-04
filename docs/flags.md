@@ -13,6 +13,7 @@
         2. Password: anything
     3. This logs you in as the first user in the database
 
+**Hint:** Don't forget to add a space after the `--` to comment out the rest of the query.
 
 2. Access Profile Page
 
