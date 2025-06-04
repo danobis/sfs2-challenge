@@ -58,12 +58,12 @@
                     <div class="card-body blur-content">
                         <h5>Intelligence Report</h5>
                         <ul>
-                            <li>Login bypass might be possible</li>
+                            <li>Login bypass might be possible.</li>
                             <li>It's may be possible to query database tables via the review system.</li>
                             <li>Plain text passwords are bad, encoding is slightly better.</li>
                             <li>User profile images are stored directly on the server.</li>
                             <li>File type validation is suspiciously absent.</li>
-							<li>php has a dangerous command called 'system'. Maybe its possible to post a html input form with that command</li>
+							<li>php has a dangerous command called 'system'. Maybe its possible to post a html input form with that command.</li>
                         </ul>
                     </div>
                 </div>
