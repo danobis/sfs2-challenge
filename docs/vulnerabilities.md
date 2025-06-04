@@ -143,33 +143,81 @@ Security Recommendations
 
 Flag Association: This vulnerability enables access to Flag 2 (File System Access)
 
-## Vulnerability 4: Format String Vulnerability in Binary Executable
+## Vulnerability 4: Buffer Overflow in Coffee Blend Input
 
-**Type**: Format String Vulnerability
-**Location**: challenge/secret-executable/vuln (compiled C binary)
+**Type**: Buffer Overflow
+**Location**: barista_academy.c - ctf_challenge_one()
 **Severity**: High
 
 #### Description
 
-The `vuln` binary discovered in the `/uploads/` directory contains a format string vulnerability. Specifically, it uses `printf(user_input)` directly without format specifiers, allowing arbitrary stack data to be read.
-
-Relevant C code excerpt:
+The original implementation of the barista challenge used an unsafe input function to read the user's favorite coffee blend into a fixed-size buffer:
 
 ```c
-char buf[1024];
-scanf("%1024s", buf);
-printf(buf); // Vulnerable: user-controlled format string
+char coffee_order[16];
+gets(coffee_order); // Vulnerable: no bounds checking
 ```
 
-This allows an attacker to leak memory content from the stack, including sensitive variables. In this challenge, the flag is hardcoded into a stack variable and can be exfiltrated using repeated `%lx` format specifiers.
+This allowed an attacker to input more than 15 characters, overflowing the buffer and overwriting adjacent variables in memory, such as `coffee_strength`. By carefully crafting the input, an attacker could set `coffee_strength` to a target value and unlock the flag.
 
-Example payload:
+#### How to Fix
 
+Use a safe input function that limits the number of characters read:
+
+```c
+// FIXED: Use fgets() to prevent buffer overflow
+fgets(coffee_order, 16, stdin);
+coffee_order[strcspn(coffee_order, "\n")] = '\0';
 ```
-%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx,%lx
+
+Flag Association: This vulnerability enables access to Flag 3 (Coffee Strength Flag)
+
+## Vulnerability 5: Integer Overflow in Coffee Purchase
+
+**Type**: Integer Overflow
+**Location**: barista_academy.c - ctf_challenge_two()
+**Severity**: High
+
+#### Description
+
+The original code used 32-bit integers for balance and cost calculations:
+
+```c
+int account_balance = 1100;
+int total_cost = 900 * number_coffees;
 ```
 
-This outputs stack memory, which can be decoded to recover the flag by reversing 64-bit chunks due to little-endian representation.
+If a very large number of coffees was entered, the multiplication could overflow, resulting in a negative or very large positive value. This could allow an attacker to bypass balance checks and increase their balance to an unintended value, unlocking the flag.
+
+#### How to Fix
+
+Use 64-bit types for calculations and validate input:
+
+```c
+// FIXED: Use long for calculations
+long account_balance = 1100;
+long total_cost = (long)900 * number_coffees;
+```
+
+Flag Association: This vulnerability enables access to Flag 4 (Coffee Shop Balance Flag)
+
+## Vulnerability 6: Format String Vulnerability in Secret Order Printer
+
+**Type**: Format String Vulnerability
+**Location**: barista_academy.c - ctf_final_challenge()
+**Severity**: High
+
+#### Description
+
+The original implementation of the secret order printer used `printf(buffer)` directly, allowing user-controlled format strings:
+
+```c
+char buffer[1024];
+scanf("%1024s", buffer);
+printf(buffer); // Vulnerable: user-controlled format string
+```
+
+This allowed an attacker to leak memory content from the stack, including sensitive variables and flags, by supplying format specifiers such as `%llx`.
 
 #### How to Fix
 
@@ -177,8 +225,8 @@ Always use format specifiers when printing user input:
 
 ```c
 // FIXED: Use format string with user input as an argument
-printf("%s", buf);
+printf("%s", buffer);
 ```
 
-Flag Association: This vulnerability enables access to Flag 3 (Secret Executable Flag)
+Flag Association: This vulnerability enables access to Flag 5 (Secret Order Printer Flag)
 
