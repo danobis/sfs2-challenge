@@ -10,20 +10,20 @@
 
 // encrypted flags (XORed byte arrays of your original flags)
 static const unsigned char enc_flag1[FLAG_BUFFER_SIZE - 1] = {
-  0x01, 0x16, 0x04, 0x39, 0x2f, 0x72, 0x21, 0x2a, 0x23, 0x1d, 
-  0x2f, 0x3b, 0x31, 0x36, 0x71, 0x30, 0x2b, 0x27, 0x31, 0x1d, 
+  0x01, 0x16, 0x04, 0x39, 0x2f, 0x72, 0x21, 0x2a, 0x23, 0x1d,
+  0x2f, 0x3b, 0x31, 0x36, 0x71, 0x30, 0x2b, 0x27, 0x31, 0x1d,
   0x30, 0x71, 0x34, 0x71, 0x76, 0x2e, 0x71, 0x26, 0x3f
 };
 
 static const unsigned char enc_flag2[FLAG_BUFFER_SIZE - 1] = {
-  0x01, 0x16, 0x04, 0x39, 0x27, 0x31, 0x32, 0x30, 0x27, 0x31, 
-  0x31, 0x2d, 0x1d, 0x71, 0x3a, 0x32, 0x30, 0x71, 0x31, 0x31, 
+  0x01, 0x16, 0x04, 0x39, 0x27, 0x31, 0x32, 0x30, 0x27, 0x31,
+  0x31, 0x2d, 0x1d, 0x71, 0x3a, 0x32, 0x30, 0x71, 0x31, 0x31,
   0x1d, 0x31, 0x27, 0x21, 0x30, 0x27, 0x36, 0x31, 0x3f
 };
 
 static const unsigned char enc_flag3[FLAG_BUFFER_SIZE - 1] = {
-  0x01, 0x16, 0x04, 0x39, 0x21, 0x23, 0x32, 0x32, 0x37, 0x21, 
-  0x21, 0x73, 0x2c, 0x72, 0x1d, 0x21, 0x30, 0x76, 0x21, 0x29, 
+  0x01, 0x16, 0x04, 0x39, 0x21, 0x23, 0x32, 0x32, 0x37, 0x21,
+  0x21, 0x73, 0x2c, 0x72, 0x1d, 0x21, 0x30, 0x76, 0x21, 0x29,
   0x71, 0x30, 0x1d, 0x76, 0x2e, 0x71, 0x30, 0x36, 0x3f
 };
 
@@ -111,7 +111,7 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
 {
   if (coffee_challenge != 0) {
     return;
-  } 
+  }
   printf("\n🎯 Your mission: Modify the coffee strength to unlock the secret!\n");
   printf("💡 Hint: Sometimes too much input can overflow... like an overfilled coffee cup!\n\n");
 
@@ -126,7 +126,12 @@ void ctf_challenge_one() // solution: 1234567890123456789012345678M
     printf("Enter your favorite coffee blend: ");
     fflush(stdout);
 
-    gets(coffee_order);
+    // gets(coffee_order);  // vulnerable
+    if (!fgets(coffee_order, sizeof(coffee_order), stdin)) {  // fixed vulnerability
+      fprintf(stderr, "fgets failed while reading coffee blend.\n");
+      exit(EXIT_FAILURE);
+    }
+    coffee_order[strcspn(coffee_order, "\n")] = '\0';  // fixed vulnerability
 
     printf("\nYour coffee order: %s\n", coffee_order);
     printf("Current coffee strength: %d\n", coffee_strength);
@@ -156,7 +161,7 @@ void ctf_challenge_two()
   }
   int account_balance = 1100;
   int number_coffees = 0;
-  int total_cost = 0;
+  long long total_cost = 0;  // fixed vulnerability (use larger type)
 
   printf("You have %d coins to spend.\n", account_balance);
   printf("Coffees cost 900 coins each.\n");
@@ -179,10 +184,10 @@ void ctf_challenge_two()
       printf("Negative purchases are not allowed!\n");
       continue;
     }
-    total_cost = 900 * number_coffees;
-    printf("Calculated total cost: %d\n", total_cost);
+    total_cost = (long long)900 * number_coffees;  // fixed vulnerability
+    printf("Calculated total cost: %lld\n", total_cost);  // fixed vulnerability
     if (total_cost <= account_balance) {
-      account_balance -= total_cost;
+      account_balance -= (int)total_cost;  // fixed vulnerability
       printf("Purchase successful! New balance: %d\n", account_balance);
       if (account_balance >= 100000) {
         printf("Here's your reward: %s\n", flag2);
@@ -223,10 +228,12 @@ void ctf_final_challenge()
     printf("Print your custom order below:\n");
     fflush(stdout);
 
-    scanf("%1024s", buffer);
+    // scanf("%1024s", buffer);  // vulnerable
+    scanf("%1023s", buffer);  // fixed vulnerability
 
     printf("Processing order: ");
-    printf(buffer);
+    // printf(buffer);  // vulnerable
+    printf("%s", buffer);  // fixed vulnerability
     printf("\n\n");
   }
   printf("Thank you for your order. Goodbye!\n");
