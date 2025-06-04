@@ -24,6 +24,9 @@ if (isset($_GET['message'])) {
         case 'review_failed':
             $message = '<div class="alert alert-danger"><i class="fas fa-times me-2"></i>Failed to save review. Please try again.</div>';
             break;
+		case 'unknown_error':
+			$message = '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Something went wrong. Please try again.</div>';
+			break;
     }
 }
 ?>
