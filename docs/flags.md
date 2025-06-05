@@ -118,8 +118,8 @@ sql', review_text=(SELECT GROUP_CONCAT(CONCAT(username,':',password,':',role) SE
    1. Move the decoded `barista_academy` binary to the `challenge/secret-executable` directory.
    2. Build and run the Docker container:
       ```sh
-      docker build -t barista-academy .
-      docker run -it --rm barista-academy
+      ./run_barista.bat # on windows
+      ./run_barista.sh  # on linux/macos
       ```
     3. Alternatively, you may run the binary directly if you have the necessary environment set up, it is a linux/amd64 binary.
 
