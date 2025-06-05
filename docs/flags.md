@@ -115,13 +115,9 @@ sql', review_text=(SELECT GROUP_CONCAT(CONCAT(username,':',password,':',role) SE
    1. On your local machine, decode the base64 file and make it executable.
 
 4. Run the Binary in Docker  
-   1. Move the decoded `barista_academy` binary to the `challenge/secret-executable` directory.
-   2. Build and run the Docker container:
-      ```sh
-      docker build -t barista-academy .
-      docker run -it --rm barista-academy
-      ```
-    3. Alternatively, you may run the binary directly if you have the necessary environment set up, it is a linux/amd64 binary.
+   1. Move the obtained `barista_academy` binary to the `challenge/secret-executable` directory.
+   2. Follow the instructions in `README.md` to run the program.
+   3. Alternatively, you may run the binary directly if you have the necessary environment set up, it is a linux/amd64 binary.
 
 5. Exploit the Buffer Overflow
    1. When prompted to enter your favorite coffee blend, input a string that overflows the buffer and overwrites the `coffee_strength` variable.
