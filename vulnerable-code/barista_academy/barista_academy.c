@@ -181,7 +181,7 @@ void ctf_challenge_one()
       break;
     }
     if (coffee_strength != 17) {
-      printf("\n💡Hint: Interesting... the coffee strength changed to %d\n", coffee_strength);
+      printf("\n💡 Hint: Interesting... the coffee strength changed to %d\n", coffee_strength);
       printf("But that's not quite the right strength for our secret recipe.\n");
       printf("Try to get it to exactly %d for the perfect brew!\n\n", actual_coffee_strength);
       fflush(stdout);

@@ -15,7 +15,5 @@ RUN wget -q https://github.com/ninja-build/ninja/releases/latest/download/ninja-
     && chmod a+x /usr/local/bin/ninja \
     && rm ninja-linux.zip 
 
-RUN apt update && apt upgrade -y
-
 WORKDIR /home/ctf
 CMD ["/bin/bash"]

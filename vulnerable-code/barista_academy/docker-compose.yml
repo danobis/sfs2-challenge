@@ -1,8 +1,6 @@
 services:
-  barista-build:
-    container_name: barista-build
+  build:
+    container_name: docker-toolchain
     build:
       context: .
       dockerfile: Dockerfile
-    stdin_open: true
-    tty: true
