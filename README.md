@@ -5,6 +5,7 @@
 ### Requirements
 - Docker
 - Docker Compose
+- Console to run C Executeables
 
 ### Setup and Start
 1. Navigate to the `challenge` directory
