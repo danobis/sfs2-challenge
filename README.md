@@ -17,9 +17,9 @@ docker compose up -d
 
 4. Later on, if you find the admin's binary, place it in the `challenge/secret-exectable` directory and run:
 
-```bash
-docker build -t secret-vuln .
-docker run -it --rm secret-vuln
+```sh
+./run_barista.bat # on windows
+./run_barista.sh  # on linux/macos
 ```
 
 ## Challenge Overview
